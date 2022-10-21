@@ -42,7 +42,7 @@ class Bot:
         """Entrypoint"""
         self._loop.run_until_complete(self.job())
 
-    async def format_file(self, df_data: DataFrame):
+    def format_file(self, df_data: DataFrame):
         """_summary_
 
         Args:
@@ -63,7 +63,7 @@ class Bot:
 
         return df_data
 
-    async def divide_alta_baja(self, df_data: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    def divide_alta_baja(self, df_data: DataFrame) -> Tuple[DataFrame, DataFrame]:
         """Divide dataframe in altas and bajas
 
         Args:
@@ -85,22 +85,32 @@ class Bot:
         for f_upload in files:
             _logger.info("Processing file %s", f_upload["path"])
 
-            data = await self.format_file(self._pandas_job.read_file(f_upload["path"]))
+            data = self.format_file(self._pandas_job.read_file(f_upload["path"]))
 
-            altas, bajas = await self.divide_alta_baja(data)
-
-            self._database.delete_from_df("test", bajas)
+            altas, bajas = self.divide_alta_baja(data)
 
             basename, ext = os.path.splitext(os.path.basename(f_upload["path"]))
 
-            tasks = [
-                self._database.delete_from_df_async("test", bajas),
-                self._pandas_job.insert_df_async(altas, "test", self._database.engine),
-                self._odoo_job.upload_file_async(
-                    f'{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}', f_upload["path"]
-                ),
-                self._odoo_job.delete_file_async(f_upload["id"]),
-            ]
+            tasks = []
+
+            tasks.append(asyncio.create_task(self._database.delete_from_df_async("test", bajas)))
+
+            tasks.append(
+                asyncio.create_task(
+                    self._pandas_job.insert_df_async(altas, "test", self._database.engine)
+                )
+            )
+
+            tasks.append(
+                asyncio.create_task(
+                    self._odoo_job.upload_file_async(
+                        f'{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}',
+                        f_upload["path"],
+                    )
+                )
+            )
+
+            tasks.append(asyncio.create_task(self._odoo_job.delete_file_async(f_upload["id"])))
 
             await asyncio.gather(*tasks, return_exceptions=False)
 
