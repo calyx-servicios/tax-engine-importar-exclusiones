@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: importar-clientes-worker # Note: Job name should match the image tag that is being tested bot-txt-70003f7-202209022017
+  labels:
+    app: importar-clientes-worker
+  namespace: jx-staging
+spec:
+  template:
+    spec:
+      containers:
+      - name: importar-clientes-worker
+        image:  "699339193037.dkr.ecr.sa-east-1.amazonaws.com/calyx-servicios/bots:arba-padron-ea68271-202208132337" # TODO: Change Image TAG
+        imagePullPolicy: IfNotPresent
+        command: ["/etc/bootstrap.sh"]
+        env:
+          - name: LOG_CONFIG_PATH
+            value: "./app/logging.ini"
+          - name: JSON_CONFIG_PATH
+            value: "./app/txt/settings.json"
+          - name: PG_HOST
+            value: "taxengine-db"
+          - name: PG_PORT
+            value: "5432"
+          - name: PG_DB
+            value: "api"
+          - name: PG_USER
+            value: "api"
+          - name: PG_PASSWORD
+            value: "api"
+          - name: CUIT
+            value: "33629749859"
+          - name: PASSWORD
+            value: "041298"
+          - name: RETRO
+            value: "1"
+          - name: COMMAND
+            value: "init"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "256Mi"
+      restartPolicy: Never
+  backoffLimit: 2
