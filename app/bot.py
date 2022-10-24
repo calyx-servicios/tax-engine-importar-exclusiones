@@ -36,6 +36,7 @@ class Bot:
         self._odoo_job = Odoo()
         self._loop = asyncio.get_event_loop()
         self._output_path = os.getenv("OUTPUT_PATH")
+        self._table_name = os.getenv("TABLE_NAME")
         os.makedirs(self._output_path, exist_ok=True)
 
     def process(self):
@@ -93,11 +94,13 @@ class Bot:
 
             tasks = []
 
-            tasks.append(asyncio.create_task(self._database.delete_from_df_async("test", bajas)))
+            tasks.append(
+                asyncio.create_task(self._database.delete_from_df_async(self._table_name, bajas))
+            )
 
             tasks.append(
                 asyncio.create_task(
-                    self._pandas_job.insert_df_async(altas, "test", self._database.engine)
+                    self._pandas_job.insert_df_async(altas, self._table_name, self._database.engine)
                 )
             )
 
