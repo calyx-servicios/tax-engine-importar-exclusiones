@@ -1,7 +1,6 @@
 """Database tools"""
 # pylint: disable=broad-except
 
-import asyncio
 import logging
 import os
 
@@ -44,52 +43,31 @@ class Database:
         url += f"{self.pg_user}:{self.pg_password}@{self.pg_host}:{int(self.pg_port)}/{self.pg_db}"
         self.engine = create_engine(url)
 
-    def drop_table(self, table_name: str):
-        """Drops table from database
-
-        Args:
-            table_name (str): _description_
-        """
-        with self.engine.connect() as conn:
-            conn.execute(f"DROP TABLE IF EXISTS {table_name}")
-
-    def add_id_to_table(self, table_name: str):
-        """_summary_
-
-        Args:
-            table_name (str): _description_
-        """
-        query = f"ALTER TABLE {table_name} ADD PRIMARY KEY ('id');"
-        with self.engine.connect() as con:
-            con.execute(query)
-
-    async def delete_from_df_async(self, *args):
-        """_summary_"""
-        return await asyncio.to_thread(self.delete_from_df, *args)
-
     def delete_from_df(self, table_name: str, df_data: DataFrame):
         """_summary_
 
         Args:
 
-        """
-
-        if df_data.shape[0] == 0:
+        """ 
+        if len(df_data) == 0:
             return
-
-        _logger.info("Selecting IDs from database. %d rows remaining.", df_data.shape[0])
-
-        query = f"""
-        SELECT id FROM {table_name} WHERE cuit IN {tuple(df_data["cuit"])}
-        AND fecha_desde IN {tuple(df_data["fecha_desde"])}
-        AND fecha_hasta IN {tuple(df_data["fecha_hasta"])}
-        """
-
+            
         try:
             with self.engine.connect() as conn:
-                results = conn.execute(query)
-                id_list = map(lambda x: x[0], results.fetchall())
-                _logger.info("Deleting rows from database.")
-                conn.execute(f"DELETE FROM {table_name} WHERE id IN {tuple(id_list)}")
+                df_data.reset_index() 
+                for index, row in df_data.iterrows():
+
+                    cuit = row["cuit"]
+                    date_from = row["fecha_vigencia_desde"].strftime("%Y-%m-%dT%H:%M:%S")
+                    date_to = row["fecha_vigencia_hasta"].strftime("%Y-%m-%dT%H:%M:%S")
+
+                    where = f"""
+                    cuit = '{cuit}'
+                    AND fecha_vigencia_desde = '{date_from}'
+                    AND fecha_vigencia_hasta = '{date_to}'
+                    """
+                    conn.execute(f"DELETE FROM {table_name} WHERE {where}")
+                    _logger.info(f"Deleted row: {cuit} | {date_from} | {date_to}")
+                
         except Exception as ex:
             _logger.error(ex)

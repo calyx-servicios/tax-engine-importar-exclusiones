@@ -52,11 +52,11 @@ class Bot:
         Returns:
             _type_: _description_
         """
-        df_data["fecha_desde"].map(
+        df_data["fecha_vigencia_desde"].map(
             lambda x: datetime.strptime(x, "%d/%m/%Y %H:%M:%S") if isinstance(x, str) else x
         )
 
-        df_data["fecha_hasta"].map(
+        df_data["fecha_vigencia_hasta"].map(
             lambda x: datetime.strptime(x, "%d/%m/%Y %H:%M:%S") if isinstance(x, str) else x
         )
 
@@ -75,6 +75,7 @@ class Bot:
         """
 
         df_altas = df_data[df_data["alta_baja"] == "A"]
+        df_altas = df_altas.drop(['alta_baja'], axis=1)
         df_bajas = df_data[df_data["alta_baja"] == "B"]
 
         return df_altas, df_bajas
@@ -92,11 +93,9 @@ class Bot:
 
             basename, ext = os.path.splitext(os.path.basename(f_upload["path"]))
 
+            self._database.delete_from_df(self._table_name, bajas)
+            
             tasks = []
-
-            tasks.append(
-                asyncio.create_task(self._database.delete_from_df_async(self._table_name, bajas))
-            )
 
             tasks.append(
                 asyncio.create_task(
