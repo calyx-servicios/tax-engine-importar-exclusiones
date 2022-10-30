@@ -64,7 +64,7 @@ class PandasJob:
             try:
                 df_data_current = pd.read_sql_table(table, engine)
 
-                # se limpian las filas con que están duplicadas con filas 
+                # se limpian las filas con que están duplicadas con filas
                 # que ya están en la base de datos
                 for index, row in df_data_current.iterrows():
                     _logger.info(f"Cleanning row {index}")
