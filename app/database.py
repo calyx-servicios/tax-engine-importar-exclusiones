@@ -67,7 +67,7 @@ class Database:
                     AND fecha_vigencia_hasta = '{date_to}'
                     """
                     conn.execute(f"DELETE FROM {table_name} WHERE {where}")
-                    _logger.info(f"Deleted row: {cuit} | {date_from} | {date_to}")
+                    _logger.info(f"Deleted row {index}: {cuit} | {date_from} | {date_to}")
 
         except Exception as ex:
             _logger.error(ex)

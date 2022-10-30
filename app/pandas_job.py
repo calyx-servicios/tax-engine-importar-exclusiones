@@ -64,8 +64,10 @@ class PandasJob:
             try:
                 df_data_current = pd.read_sql_table(table, engine)
 
-                # se limpian las filas con que están duplicadas con filas que ya están en la base de datos
+                # se limpian las filas con que están duplicadas con filas 
+                # que ya están en la base de datos
                 for index, row in df_data_current.iterrows():
+                    _logger.info(f"Cleanning row {index}")
                     df_data_cleaned = df_data_cleaned[
                         (df_data_cleaned["cuit"] == row["cuit"])
                         & (df_data_cleaned["fecha_vigencia_desde"] == row["fecha_vigencia_desde"])
