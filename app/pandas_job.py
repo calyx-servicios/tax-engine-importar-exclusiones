@@ -10,12 +10,6 @@ from sqlalchemy.engine import Engine
 _logger = logging.getLogger(__name__)
 
 
-def format_date(_date):
-    """Format date"""
-    if isinstance(_date, str):
-        _date = datetime.strptime(_date, "%d%m%Y")
-    return _date
-
 
 class PandasJob:
     """Pandas Job"""
@@ -38,6 +32,14 @@ class PandasJob:
             skipinitialspace=True,
             delimiter=",",
             index_col=False,
+            header=None,
+            names=[
+                "cuit",
+                "regimen",
+                "fecha_desde",
+                "fecha_hasta",
+                "alta_baja",
+            ],
         )
 
         return df_data

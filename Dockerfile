@@ -35,7 +35,5 @@ EXPOSE 3003
 
 COPY bootstrap.sh /etc/bootstrap.sh
 RUN chmod a+x /etc/bootstrap.sh
-COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
-RUN chmod a+x /usr/local/bin/wait-for-psql.py
 
 CMD ["/etc/bootstrap.sh"]

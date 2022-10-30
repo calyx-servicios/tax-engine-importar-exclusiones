@@ -60,7 +60,7 @@ class Bot:
             lambda x: datetime.strptime(x, "%d/%m/%Y %H:%M:%S") if isinstance(x, str) else x
         )
 
-        df_data["cuit_sujeto"] = df_data["cuit_sujeto"].astype(str)
+        df_data["cuit"] = df_data["cuit"].astype(str)
 
         return df_data
 

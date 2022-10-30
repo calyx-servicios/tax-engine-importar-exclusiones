@@ -80,7 +80,7 @@ class Database:
         _logger.info("Selecting IDs from database. %d rows remaining.", df_data.shape[0])
 
         query = f"""
-        SELECT id FROM {table_name} WHERE cuit_sujeto IN {tuple(df_data["cuit_sujeto"])}
+        SELECT id FROM {table_name} WHERE cuit IN {tuple(df_data["cuit"])}
         AND fecha_desde IN {tuple(df_data["fecha_desde"])}
         AND fecha_hasta IN {tuple(df_data["fecha_hasta"])}
         """

@@ -100,8 +100,6 @@ class Odoo:
         """
         uid = call(self.url, "common", "login", self.dbname, self.user, self.password)
 
-        _logger.info("Files in Directory:%s", self.dir_to_process_id)
-
         file_ids = call(
             self.url,
             "object",
@@ -115,6 +113,10 @@ class Odoo:
         )
 
         files = []
+
+        _logger.info("Files in Directory %s: %s"
+        , self.dir_to_process_id
+        , len(file_ids))
 
         for file_id in file_ids:
             _logger.info("File:%s Size:%s", file_id["name"], file_id["size"])
