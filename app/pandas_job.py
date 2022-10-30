@@ -8,7 +8,6 @@ from sqlalchemy.engine import Engine
 _logger = logging.getLogger(__name__)
 
 
-
 class PandasJob:
     """Pandas Job"""
 
@@ -32,9 +31,9 @@ class PandasJob:
             index_col=False,
             header=None,
             parse_dates=[
-                        "fecha_vigencia_desde",
-                        "fecha_vigencia_hasta",
-                    ],
+                "fecha_vigencia_desde",
+                "fecha_vigencia_hasta",
+            ],
             names=[
                 "cuit",
                 "regimen",
@@ -61,26 +60,24 @@ class PandasJob:
         try:
             _logger.info("=== File to dataframe ===")
             df_data_cleaned = df_data
-            
+
             try:
                 df_data_current = pd.read_sql_table(table, engine)
-            
+
                 # se limpian las filas con que están duplicadas con filas que ya están en la base de datos
                 for index, row in df_data_current.iterrows():
-                    df_data_cleaned = df_data_cleaned[(df_data_cleaned["cuit"]==row["cuit"]) 
-                    & (df_data_cleaned["fecha_vigencia_desde"]==row["fecha_vigencia_desde"]) 
-                    & (df_data_cleaned["fecha_vigencia_hasta"]==row["fecha_vigencia_hasta"])]
+                    df_data_cleaned = df_data_cleaned[
+                        (df_data_cleaned["cuit"] == row["cuit"])
+                        & (df_data_cleaned["fecha_vigencia_desde"] == row["fecha_vigencia_desde"])
+                        & (df_data_cleaned["fecha_vigencia_hasta"] == row["fecha_vigencia_hasta"])
+                    ]
             except ValueError as ex:
-                if str(ex)[:5] == 'Table' and str(ex)[-9:] == "not found":
+                if str(ex)[:5] == "Table" and str(ex)[-9:] == "not found":
                     _logger.info(f"No existe la tabla {table}")
                 else:
                     raise ex
 
-            df_data_cleaned.to_sql(
-                table, engine,
-                if_exists="append",
-                index=False,
-                method="multi")
+            df_data_cleaned.to_sql(table, engine, if_exists="append", index=False, method="multi")
 
             _logger.info("Dataframe inserted in database.")
 

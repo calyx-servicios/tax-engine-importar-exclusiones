@@ -48,13 +48,13 @@ class Database:
 
         Args:
 
-        """ 
+        """
         if len(df_data) == 0:
             return
-            
+
         try:
             with self.engine.connect() as conn:
-                df_data.reset_index() 
+                df_data.reset_index()
                 for index, row in df_data.iterrows():
 
                     cuit = row["cuit"]
@@ -68,6 +68,6 @@ class Database:
                     """
                     conn.execute(f"DELETE FROM {table_name} WHERE {where}")
                     _logger.info(f"Deleted row: {cuit} | {date_from} | {date_to}")
-                
+
         except Exception as ex:
             _logger.error(ex)

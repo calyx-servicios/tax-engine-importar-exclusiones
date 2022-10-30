@@ -114,9 +114,9 @@ class Odoo:
 
         files = []
 
-        _logger.info("Files in Directory %s: %s"
-        , self.dir_to_process_id
-        , len(file_ids))
+        p_id = self.dir_to_process_id
+        _len = len(file_ids)
+        _logger.info("Files in Directory %s: %s", p_id, _len)
 
         for file_id in file_ids:
             _logger.info("File:%s Size:%s", file_id["name"], file_id["size"])
