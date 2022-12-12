@@ -16,26 +16,34 @@ spec:
         env:
           - name: LOG_CONFIG_PATH
             value: "./app/logging.ini"
-          - name: JSON_CONFIG_PATH
-            value: "./app/txt/settings.json"
           - name: PG_HOST
-            value: "taxengine-db"
+            value: "c3xsrv-staging-cluster.cluster-cq2hbvmifkaj.sa-east-1.rds.amazonaws.com"
           - name: PG_PORT
             value: "5432"
           - name: PG_DB
-            value: "api"
+            value: "tax-engine-database-db-stage"
           - name: PG_USER
-            value: "api"
+            value: "tax_engine_database_stage"
           - name: PG_PASSWORD
-            value: "api"
-          - name: CUIT
-            value: "33629749859"
-          - name: PASSWORD
-            value: "041298"
-          - name: RETRO
-            value: "1"
+            value: "lia7Nie3bahch6teiyaeto5chie2yaiN"
           - name: COMMAND
             value: "init"
+          - name: TABLE_NAME
+            value: "exclusiones"
+          - name: ODOO_URL
+            value: "https://tax-engine-backend-jx-staging.c3xsrv.com/jsonrpc"
+          - name: ODOO_USER
+            value: "admin"
+          - name: OUTPUT_PATH
+            value: "/code/app/downloads"
+          - name: ODOO_PASSWORD
+            value: "vae9Bahraibooyiecisai5jam6pei8Uc"
+          - name: ODOO_DB
+            value: "tax-engine-backend"
+          - name: ODOO_DIRECTORY_TO_PROCESS
+            value: "42"
+          - name: ODOO_DIRECTORY_PROCESSED
+            value: "43"
         resources:
           requests:
             cpu: "500m"

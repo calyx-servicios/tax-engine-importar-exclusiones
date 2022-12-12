@@ -12,7 +12,7 @@ services:
       - PG_DB=taxengine
       - PG_USER=taxengine
       - PG_PASSWORD=taxengine
-      - TABLE_NAME=importacion_exclusiones
+      - TABLE_NAME=exclusiones
       - COMMAND=init # use jupyter to start jupyter lab and run the app from there
       - JUPYTER_TOKEN=the5ooxoo0ahNoojuNgiahoon8koozie
       - CREATE=true # This variable is only necessary for local development
