@@ -5,13 +5,13 @@ services:
   bot:
     build: .
     environment:
-      - DEBUG=true
+      - DEBUG=false
       - SHELL=/bin/bash
-      - PG_HOST=pgbouncer
-      - PG_PORT=5432
-      - PG_DB=taxengine
-      - PG_USER=taxengine
-      - PG_PASSWORD=taxengine
+      - PG_HOST=host.docker.internal
+      - PG_PORT=5433
+      - PG_DB=tax-engine-database-db-stage
+      - PG_USER=tax_engine_database_stage
+      - PG_PASSWORD=lia7Nie3bahch6teiyaeto5chie2yaiN
       - TABLE_NAME=exclusiones
       - COMMAND=init # use jupyter to start jupyter lab and run the app from there
       - JUPYTER_TOKEN=the5ooxoo0ahNoojuNgiahoon8koozie
@@ -23,6 +23,7 @@ services:
       - ODOO_DB=tax-engine-backend
       - ODOO_DIRECTORY_TO_PROCESS=42 # carpeta "dia-clientes\Para procesar"
       - ODOO_DIRECTORY_PROCESSED=43 # carpeta "dia-clientes\Procesados"
+      - AGENTE=1
     ports:
       - "1022:22"
       - "3002:3002" # Debugpy if Debug=true | Matching the .vscode launch "debugServer": 3002 

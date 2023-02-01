@@ -1,6 +1,7 @@
 """Pandas Job"""
 import asyncio
 import logging
+import os
 
 import pandas as pd
 from sqlalchemy.engine import Engine
@@ -78,6 +79,31 @@ class PandasJob:
                     _logger.info(f"No existe la tabla {table}")
                 else:
                     raise ex
+
+            df_data_cleaned["cuit"] = [str(cuit).strip() for cuit in df_data_cleaned["cuit"]]
+            df_data_cleaned["regimen"] = [str(regimen).strip() for regimen in df_data_cleaned["regimen"]]
+            df_data_cleaned["fecha_vigencia_desde"] = [str(fecha_vigencia_desde).strip() for fecha_vigencia_desde in df_data_cleaned["fecha_vigencia_desde"]]
+            df_data_cleaned["fecha_vigencia_hasta"] = [str(fecha_vigencia_hasta).strip() for fecha_vigencia_hasta in df_data_cleaned["fecha_vigencia_hasta"]]
+
+            df_data_agents = pd.read_sql_table("agentes", engine)
+            df_data_regimes = pd.read_sql_table("regimenes", engine)
+
+            agent_id = df_data_agents[df_data_agents["codigo"]==int(os.getenv("AGENTE"))].iat[0,0]
+            df_data_cleaned["agente_id"] = agent_id
+
+            df_data_cleaned["regimen"] = df_data_cleaned["regimen"].astype(int)
+
+            df_data_cleaned = df_data_cleaned.merge(df_data_regimes, left_on="regimen", right_on="codigo")
+            df_data_cleaned["regimen_id"] = [id for id in df_data_cleaned["id"]]
+
+            df_data_cleaned.drop("regimen", axis=1, inplace=True)
+            df_data_cleaned.drop("id", axis=1, inplace=True)
+            df_data_cleaned.drop("codigo", axis=1, inplace=True)
+            df_data_cleaned.drop("descripcion", axis=1, inplace=True)
+            df_data_cleaned.drop("minimo_imponible", axis=1, inplace=True)
+            df_data_cleaned.drop("alicuota_default", axis=1, inplace=True)
+            df_data_cleaned.drop("alicuota_locales", axis=1, inplace=True)
+            df_data_cleaned.drop("alicuota_convenio", axis=1, inplace=True)
 
             df_data_cleaned.to_sql(table, engine, if_exists="append", index=False, method="multi")
 
