@@ -56,7 +56,6 @@ class Database:
             with self.engine.connect() as conn:
                 df_data.reset_index()
                 for index, row in df_data.iterrows():
-
                     cuit = row["cuit"]
                     date_from = row["fecha_vigencia_desde"].strftime("%Y-%m-%dT%H:%M:%S")
                     date_to = row["fecha_vigencia_hasta"].strftime("%Y-%m-%dT%H:%M:%S")
