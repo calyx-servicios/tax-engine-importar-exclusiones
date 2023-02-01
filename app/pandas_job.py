@@ -106,7 +106,8 @@ class PandasJob:
             df_data_cleaned = df_data_cleaned.merge(
                 df_data_regimes, left_on="regimen", right_on="codigo"
             )
-            df_data_cleaned["regimen_id"] = [id for id in df_data_cleaned["id"]]
+            df_data_cleaned["regimen_id"] = list(df_data_cleaned['id'])
+            
 
             df_data_cleaned.drop("regimen", axis=1, inplace=True)
             df_data_cleaned.drop("id", axis=1, inplace=True)
