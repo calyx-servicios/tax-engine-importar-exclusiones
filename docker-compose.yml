@@ -7,8 +7,8 @@ services:
     environment:
       - DEBUG=false
       - SHELL=/bin/bash
-      - PG_HOST=host.docker.internal
-      - PG_PORT=5433
+      - PG_HOST=c3xsrv-staging-cluster.cluster-cq2hbvmifkaj.sa-east-1.rds.amazonaws.com
+      - PG_PORT=5432
       - PG_DB=tax-engine-database-db-stage
       - PG_USER=tax_engine_database_stage
       - PG_PASSWORD=lia7Nie3bahch6teiyaeto5chie2yaiN

@@ -70,9 +70,9 @@ class PandasJob:
                 for index, row in df_data_current.iterrows():
                     _logger.info(f"Cleanning row {index}")
                     df_data_cleaned = df_data_cleaned[
-                        (df_data_cleaned["cuit"] == row["cuit"])
-                        & (df_data_cleaned["fecha_vigencia_desde"] == row["fecha_vigencia_desde"])
-                        & (df_data_cleaned["fecha_vigencia_hasta"] == row["fecha_vigencia_hasta"])
+                        (df_data_cleaned["cuit"] != row["cuit"])
+                        | (df_data_cleaned["fecha_vigencia_desde"] != row["fecha_vigencia_desde"])
+                        | (df_data_cleaned["fecha_vigencia_hasta"] != row["fecha_vigencia_hasta"])
                     ]
             except ValueError as ex:
                 if str(ex)[:5] == "Table" and str(ex)[-9:] == "not found":
