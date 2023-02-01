@@ -103,7 +103,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   Docker:
-    needs: [hadolint, build]
+    needs: []
     runs-on: ubuntu-latest
     steps:
     - name: Git variables
