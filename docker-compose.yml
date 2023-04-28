@@ -1,0 +1,37 @@
+# Agustin Wisky <a.wisky@patagon.io> 
+
+version: '3'
+services:
+  bot:
+    build: .
+    environment:
+      - DEBUG=false
+      - SHELL=/bin/bash
+      - PG_HOST=c3xsrv-staging-cluster.cluster-cq2hbvmifkaj.sa-east-1.rds.amazonaws.com
+      - PG_PORT=5432
+      - PG_DB=tax-engine-database-db-stage
+      - PG_USER=tax_engine_database_stage
+      - PG_PASSWORD=lia7Nie3bahch6teiyaeto5chie2yaiN
+      - TABLE_NAME=exclusiones
+      - COMMAND=init # use jupyter to start jupyter lab and run the app from there
+      - JUPYTER_TOKEN=the5ooxoo0ahNoojuNgiahoon8koozie
+      - CREATE=true # This variable is only necessary for local development
+      - OUTPUT_PATH=/code/app/downloads
+      - ODOO_URL=https://tax-engine-backend-jx-staging.c3xsrv.com/jsonrpc
+      - ODOO_USER=admin
+      - ODOO_PASSWORD=vae9Bahraibooyiecisai5jam6pei8Uc
+      - ODOO_DB=tax-engine-backend
+      - ODOO_DIRECTORY_TO_PROCESS=42 # carpeta "dia-clientes\Para procesar"
+      - ODOO_DIRECTORY_PROCESSED=43 # carpeta "dia-clientes\Procesados"
+      - AGENTE=1
+    ports:
+      - "1022:22"
+      - "3002:3002" # Debugpy if Debug=true | Matching the .vscode launch "debugServer": 3002 
+      - "8888:8888"
+    tty: true
+    volumes:
+      - ./:/code
+networks:
+  default:
+      external:
+        name: tax-engine-database_default

@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: importar-exclusiones-worker # Note: Job name should match the image tag that is being tested bot-txt-70003f7-202209022017
+  labels:
+    app: importar-exclusiones-worker
+  namespace: jx-staging
+spec:
+  template:
+    spec:
+      containers:
+      - name: importar-exclusiones-worker
+        image:  "699339193037.dkr.ecr.sa-east-1.amazonaws.com/calyx-servicios/bots:arba-padron-5ac19e1-202212130002" # TODO: Change Image TAG
+        imagePullPolicy: IfNotPresent
+        command: ["/etc/bootstrap.sh"]
+        env:
+          - name: LOG_CONFIG_PATH
+            value: "./app/logging.ini"
+          - name: PG_HOST
+            value: "c3xsrv-staging-cluster.cluster-cq2hbvmifkaj.sa-east-1.rds.amazonaws.com"
+          - name: PG_PORT
+            value: "5432"
+          - name: PG_DB
+            value: "tax-engine-database-db-stage"
+          - name: PG_USER
+            value: "tax_engine_database_stage"
+          - name: PG_PASSWORD
+            value: "lia7Nie3bahch6teiyaeto5chie2yaiN"
+          - name: COMMAND
+            value: "init"
+          - name: TABLE_NAME
+            value: "exclusiones"
+          - name: ODOO_URL
+            value: "https://tax-engine-backend-jx-staging.c3xsrv.com/jsonrpc"
+          - name: ODOO_USER
+            value: "admin"
+          - name: OUTPUT_PATH
+            value: "/code/app/downloads"
+          - name: ODOO_PASSWORD
+            value: "vae9Bahraibooyiecisai5jam6pei8Uc"
+          - name: ODOO_DB
+            value: "tax-engine-backend"
+          - name: ODOO_DIRECTORY_TO_PROCESS
+            value: "42"
+          - name: ODOO_DIRECTORY_PROCESSED
+            value: "43"
+          - name: AGENTE
+            value: "1"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "256Mi"
+      restartPolicy: Never
+  backoffLimit: 2
