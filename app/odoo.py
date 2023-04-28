@@ -10,6 +10,8 @@ import shutil
 import urllib.request
 from typing import List
 
+from custom_ex import CustomException
+
 _logger = logging.getLogger(__name__)
 
 # pylint: disable=broad-except
@@ -50,7 +52,7 @@ def json_rpc(url, method, params):
         reply = json.loads(content.read().decode("UTF-8"))
 
     if reply.get("error"):
-        raise Exception(reply["error"])
+        raise CustomException(reply["error"])
 
     result = reply["result"]
 
