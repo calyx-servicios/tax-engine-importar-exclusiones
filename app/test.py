@@ -1,3 +1,4 @@
+"""Test module"""
 from pandas_job import PandasJob
 from bot import Bot
 
