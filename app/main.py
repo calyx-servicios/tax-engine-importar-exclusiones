@@ -6,6 +6,8 @@ import sys
 import debugpy
 from bot import Bot
 
+# from test import test
+
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
@@ -21,3 +23,4 @@ if __name__ == "__main__":
         _logger.info("Debugging....")
     bot = Bot()
     bot.process()
+    # test()

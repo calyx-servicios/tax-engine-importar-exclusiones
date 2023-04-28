@@ -5,7 +5,7 @@ services:
   bot:
     build: .
     environment:
-      - DEBUG=false
+      - DEBUG=true
       - SHELL=/bin/bash
       - PG_HOST=c3xsrv-staging-cluster.cluster-cq2hbvmifkaj.sa-east-1.rds.amazonaws.com
       - PG_PORT=5432

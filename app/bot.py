@@ -52,11 +52,11 @@ class Bot:
         Returns:
             _type_: _description_
         """
-        df_data["fecha_vigencia_desde"].map(
+        df_data["fecha_vigencia_desde"] = df_data["fecha_vigencia_desde"].map(
             lambda x: datetime.strptime(x, "%d/%m/%Y %H:%M:%S") if isinstance(x, str) else x
         )
 
-        df_data["fecha_vigencia_hasta"].map(
+        df_data["fecha_vigencia_hasta"] = df_data["fecha_vigencia_hasta"].map(
             lambda x: datetime.strptime(x, "%d/%m/%Y %H:%M:%S") if isinstance(x, str) else x
         )
 
