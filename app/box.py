@@ -28,15 +28,15 @@ class Box:
             folder_name="Supermercados Dia", folder_id=0
         )[0]
         if os.getenv("BOX_ENV") == "PROD":
-            folder_id_clientes = self.get_folder_id_from_all_files(
-                folder_name="Clientes", folder_id=folder_id_main
+            folder_id_exclusiones = self.get_folder_id_from_all_files(
+                folder_name="Exclusiones", folder_id=folder_id_main
             )[0]
         else:
-            folder_id_clientes = self.get_folder_id_from_all_files(
-                folder_name="Clientes", folder_id=folder_id_main
+            folder_id_exclusiones = self.get_folder_id_from_all_files(
+                folder_name="Exclusiones", folder_id=folder_id_main
             )[0]
 
-        self._folder_box = folder_id_clientes
+        self._folder_box = folder_id_exclusiones
 
     def get_files(self, output_path: str) -> List[str]:
         """_summary_
