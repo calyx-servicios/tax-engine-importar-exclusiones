@@ -50,10 +50,9 @@ class Box:
         files = []
         list_facturas = self.get_all_items_of_folder(self._folder_box, "file")
         for factura in list_facturas:
-            if "tax-engine" not in factura["name"]:
-                self.download_file(factura, output_path)
-                new_path = f"{output_path}/{factura['name']}"
-                files.append({"path": new_path, "id": str(uuid.uuid4())})
+            self.download_file(factura, output_path)
+            new_path = f"{output_path}/{factura['name']}"
+            files.append({"path": new_path, "id": str(uuid.uuid4())})
         return files
 
     def upload_file(self, name, filename):
@@ -73,9 +72,9 @@ class Box:
         Args:
             fileid (_type_): _description_
         """
-        path_file = os.path.dirname(fileid)
-        if os.path.exists(path_file):
-            os.remove(fileid)
+        # path_file = os.path.dirname(fileid)
+        # if os.path.exists(path_file):
+        #     os.remove(fileid)
         list_files = self.get_all_items_of_folder(self._folder_box, "file")
         self.remove_files_folder(list_files)
 
