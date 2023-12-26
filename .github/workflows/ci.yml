@@ -6,10 +6,6 @@ name: QA Test
 on:
   push:
     branches:
-      - feature/*
-      - hotfix/*
-      - fix/*
-      - main
       - '*'
 
 jobs:
