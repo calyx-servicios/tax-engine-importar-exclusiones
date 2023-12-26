@@ -1,3 +1,5 @@
+"""This file contains the implementation of the Box class, which is used to represent a box.
+"""
 import os
 import uuid
 from typing import List
