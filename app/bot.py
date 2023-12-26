@@ -7,9 +7,9 @@ from datetime import datetime
 from typing import Tuple
 
 from database import Database
-from odoo import Odoo
 from pandas import DataFrame
 from pandas_job import PandasJob
+from box import Box
 
 _logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class Bot:
         _logger.info("====Starting Bot===")
         self._database = Database()
         self._pandas_job = PandasJob()
-        self._odoo_job = Odoo()
+        self._box = Box()
         self._loop = asyncio.get_event_loop()
         self._output_path = os.getenv("OUTPUT_PATH")
         self._table_name = os.getenv("TABLE_NAME")
@@ -82,7 +82,7 @@ class Bot:
 
     async def job(self):
         """Job"""
-        files = self._odoo_job.get_files(self._output_path)
+        files = self._box.get_files(self._output_path)
 
         for f_upload in files:
             _logger.info("Processing file %s", f_upload["path"])
@@ -103,16 +103,11 @@ class Bot:
                 )
             )
 
-            tasks.append(
-                asyncio.create_task(
-                    self._odoo_job.upload_file_async(
-                        f'{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}',
-                        f_upload["path"],
-                    )
-                )
+            self._box.upload_file(
+                f'{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}', f_upload["path"]
             )
 
-            tasks.append(asyncio.create_task(self._odoo_job.delete_file_async(f_upload["id"])))
+            self._box.delete_file(f_upload["path"])
 
             await asyncio.gather(*tasks, return_exceptions=False)
 

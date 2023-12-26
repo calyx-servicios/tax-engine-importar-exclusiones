@@ -24,6 +24,12 @@ services:
       - ODOO_DIRECTORY_TO_PROCESS=42 # carpeta "dia-clientes\Para procesar"
       - ODOO_DIRECTORY_PROCESSED=43 # carpeta "dia-clientes\Procesados"
       - AGENTE=1
+      - BOX_GRANT_TYPE=client_credentials
+      - BOX_CLIENT_ID=yn7fndi07s1eado5fdirwpg2ovdnqj2o # TODO: CAMBIAR
+      - BOX_CLIENT_SECRET=JzWWX3W5qbznEfbRMBaKpvE0hbSDDFuR  # TODO: CAMBIAR
+      - BOX_SUBJECT_ID=26053675872
+      - BOX_SUBJECT_TYPE=user
+      - BOX_ENV=DEV
     ports:
       - "1022:22"
       - "3002:3002" # Debugpy if Debug=true | Matching the .vscode launch "debugServer": 3002 
