@@ -12,6 +12,7 @@ from pandas_job import PandasJob
 from box import Box
 
 _logger = logging.getLogger(__name__)
+logging.getLogger("boxsdk").setLevel(logging.WARNING)
 
 
 class Bot:
