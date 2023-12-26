@@ -1,8 +1,8 @@
-import requests
 import os
 import uuid
-from shutil import copyfile
 from typing import List
+from shutil import copyfile
+import requests
 from boxsdk import OAuth2, Client
 
 
@@ -152,9 +152,15 @@ class Box:
             self.logger.error(message)
 
     def download_file(self, factura, download_path):
+        """_summary_
+
+        Args:
+            factura (_type_): _description_
+            download_path (_type_): _description_
+        """
         try:
-            output_file = open(f"{download_path}/{factura['name']}", "wb")
-            self.client.file(file_id=factura["id"]).download_to(output_file)
+            with open(f"{download_path}/{factura['name']}", "wb") as output_file:
+                self.client.file(file_id=factura["id"]).download_to(output_file)
             self.logger.info(f"Se descargo con exito el archivo {factura['name']}")
         except Exception as error:
             message = (
@@ -179,25 +185,26 @@ class Box:
             self.logger.error(f"Detalle error: {error}")
 
     def get_auth(self, grant_type, client_id, secret_client, subject_id, subject_type, logger):
+        """_summary_
+        Args:
+            grant_type (_type_): _description_
+            client_id (_type_): _description_
+            secret_client (_type_): _description_
+            subject_id (_type_): _description_
+            subject_type (_type_): _description_
+            metadata_template (_type_): _description_
+            logger (_type_): _description_
+        Returns:
+            _type_: _description_
+        """
         try:
-            """_summary_
-            Args:
-                grant_type (_type_): _description_
-                client_id (_type_): _description_
-                secret_client (_type_): _description_
-                subject_id (_type_): _description_
-                subject_type (_type_): _description_
-                metadata_template (_type_): _description_
-                logger (_type_): _description_
-            Returns:
-                _type_: _description_
-            """
             access_token, expires_in = self.get_access_token(
                 grant_type, client_id, secret_client, subject_type, subject_id
             )
             box_client = self.get_client(client_id, secret_client, access_token)
             return box_client, expires_in
         except Exception as error:
+            logger.error(f"Error en auth box: {error}")
             raise error
 
     def get_access_token(
@@ -248,7 +255,15 @@ class Box:
             return client
         return "no_client_box"
 
-    def refresh_token_func(client_id, client_secret, token, refresh_token):
+    def refresh_token_func(self, client_id, client_secret, token, refresh_token):
+        """_summary_
+
+        Args:
+            client_id (_type_): _description_
+            client_secret (_type_): _description_
+            token (_type_): _description_
+            refresh_token (_type_): _description_
+        """
         auth = OAuth2(
             client_id=client_id,
             client_secret=client_secret,
