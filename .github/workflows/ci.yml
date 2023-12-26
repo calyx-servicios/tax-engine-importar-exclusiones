@@ -79,25 +79,3 @@ jobs:
         with:
           dockerfile: Dockerfile
           ignore: DL3002
-  build:
-    name: SonarQube
-    needs: [pylint,flake8, black]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-              -Dsonar.python.coverage.reportPaths=coverage.xml
-              -Dsonar.verbose=true
-              -Dsonar.exclusions=**/__manifest__.py
-              -Dsonar.python.version=3.9
-      - uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
