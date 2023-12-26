@@ -23,7 +23,7 @@ class Box:
         )
         self.logger = logger
         folder_id_main = self.get_folder_id_from_all_files(
-                folder_name="Supermercados Dia", folder_id=0
+            folder_name="Supermercados Dia", folder_id=0
         )[0]
         if os.getenv("BOX_ENV") == "PROD":
             folder_id_clientes = self.get_folder_id_from_all_files(
