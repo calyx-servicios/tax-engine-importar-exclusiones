@@ -48,7 +48,10 @@ class Box:
             List[str]: _description_
         """
         files = []
-        list_facturas = self.get_all_items_of_folder(self._folder_box, "file")
+        id_folder_input = self.get_folder_id_from_all_files(
+            folder_name="Input", folder_id=self._folder_box
+        )[0]
+        list_facturas = self.get_all_items_of_folder(id_folder_input, "file")
         for factura in list_facturas:
             self.download_file(factura, output_path)
             new_path = f"{output_path}/{factura['name']}"
