@@ -74,15 +74,6 @@ class Box:
         list_files = self.get_all_items_of_folder(self._folder_box, "file")
         self.remove_files_folder(list_files)
 
-    def get_current_client(self) -> str:
-        """Retorna el nombre del cliente actual
-
-        Returns:
-            str: _description_
-        """
-        current_user = self.client.user(user_id="me").get().name
-        return current_user
-
     def get_all_items_of_folder(self, folder_id: int, item_type: str) -> list:
         """Retorna una lista con todos los archivos de un tipo en especifico del id de carpeta
         pasado por parametro
@@ -156,71 +147,6 @@ class Box:
         except Exception as error:
             message = f"Hubo un error con la subida del archivo: - Exception: {error}"
             self.logger.error(message)
-
-    def validate_folder_date(
-        self, folder_id: str, year: str, mounth: str, day: str, hours: str
-    ) -> str:
-        """Funcion destinada a validar existencia y crear carpetas de fechas
-        Param:
-                Folder_id = Id de carpeta donde se creara la sub-carpeta
-                Year =  Año actual
-                Mounth = Mes actual
-                Day = Dia actual
-                hours = Hora actual
-        Return:
-                id de sub-carpeta creada en formato string
-        """
-        subfolder_flag_year = self.get_folder_id_from_all_files(f"Año: {year}", folder_id)[0]
-        if subfolder_flag_year != "0":
-            if subfolder_flag_year != folder_id:
-                subfolder_flag_mounth = self.get_folder_id_from_all_files(
-                    f"Mes: {mounth}", subfolder_flag_year
-                )[0]
-
-                if subfolder_flag_mounth != subfolder_flag_year:
-                    subfolder_flag_day = self.get_folder_id_from_all_files(
-                        f"Dia: {day}", subfolder_flag_mounth
-                    )[0]
-
-                    if subfolder_flag_day != subfolder_flag_mounth:
-                        folders_hours = self.get_all_items_of_folder(subfolder_flag_day, "folder")
-                        for folder_hour in folders_hours:
-                            if folder_hour["name"] == f"Hora: {hours}:00":
-                                return folder_hour["id"]
-                        subfolder = self.client.folder(subfolder_flag_day).create_subfolder(
-                            f"Hora: {hours}:00"
-                        )
-                    else:
-                        subfolder_day = self.client.folder(subfolder_flag_mounth).create_subfolder(
-                            f"Dia: {day}"
-                        )
-                        subfolder = self.client.folder(subfolder_day.id).create_subfolder(
-                            f"Hora: {hours}:00"
-                        )
-                else:
-                    subfolder_mounth = self.client.folder(subfolder_flag_year).create_subfolder(
-                        f"Mes: {mounth}"
-                    )
-                    subfolder_day = self.client.folder(subfolder_mounth.id).create_subfolder(
-                        f"Dia: {day}"
-                    )
-                    subfolder = self.client.folder(subfolder_day.id).create_subfolder(
-                        f"Hora: {hours}:00"
-                    )
-            else:
-                subfolder_year = self.client.folder(folder_id).create_subfolder(f"Año: {year}")
-                subfolder_mounth = self.client.folder(subfolder_year.id).create_subfolder(
-                    f"Mes: {mounth}"
-                )
-                subfolder_day = self.client.folder(subfolder_mounth.id).create_subfolder(
-                    f"Dia: {day}"
-                )
-                subfolder = self.client.folder(subfolder_day.id).create_subfolder(
-                    f"Hora: {hours}:00"
-                )
-
-            return subfolder.id
-        return subfolder_flag_year
 
     def download_file(self, factura, download_path):
         try:
