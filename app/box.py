@@ -72,8 +72,9 @@ class Box:
         Args:
             fileid (_type_): _description_
         """
-        # path_file = os.path.dirname(fileid)
-        # if os.path.exists(path_file):
+        path_file = os.path.dirname(fileid)
+        if os.path.exists(path_file):
+            pass
         #     os.remove(fileid)
         list_files = self.get_all_items_of_folder(self._folder_box, "file")
         self.remove_files_folder(list_files)
@@ -179,8 +180,7 @@ class Box:
         """
         try:
             for file_del in list_files_del:
-                if "tax-engine" not in file_del["name"]:
-                    self.client.file(file_id=file_del["id"]).delete()
+                self.client.file(file_id=file_del["id"]).delete()
         except Exception as error:
             self.logger.error(f"Problemas para eliminar {file_del['name']}")
             self.logger.error(f"Detalle error: {error}")
