@@ -33,7 +33,7 @@ class Bot:
         _logger.info("====Starting Bot===")
         self._database = Database()
         self._pandas_job = PandasJob()
-        self._box = Box()
+        self._box = Box(_logger)
         self._loop = asyncio.get_event_loop()
         self._output_path = os.getenv("OUTPUT_PATH")
         self._table_name = os.getenv("TABLE_NAME")
