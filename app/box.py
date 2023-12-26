@@ -65,8 +65,11 @@ class Box:
             name (_type_): _description_
             filename (_type_): _description_
         """
+        id_folder_output = self.get_folder_id_from_all_files(
+            folder_name="Output", folder_id=self._folder_box
+        )[0]
         copyfile(filename, name)
-        self.upload_files(self._folder_box, name)
+        self.upload_files(id_folder_output, name)
         self.logger.info(f"Se cargo en box con exito el archivo {name}")
 
     def delete_file(self, fileid):
@@ -75,12 +78,15 @@ class Box:
         Args:
             fileid (_type_): _description_
         """
-        path_file = os.path.dirname(fileid)
-        if os.path.exists(path_file):
-            pass
-        #     os.remove(fileid)
-        list_files = self.get_all_items_of_folder(self._folder_box, "file")
-        self.remove_files_folder(list_files)
+
+        id_folder_input = self.get_folder_id_from_all_files(
+            folder_name="Input", folder_id=self._folder_box
+        )[0]
+        file_delete = os.path.basename(fileid)
+        list_files = self.get_all_items_of_folder(id_folder_input, "file")
+        resultados = [x for x in list_files if x["name"] == file_delete]
+        file_del = resultados[0]
+        self.client.file(file_id=file_del["id"]).delete()
 
     def get_all_items_of_folder(self, folder_id: int, item_type: str) -> list:
         """Retorna una lista con todos los archivos de un tipo en especifico del id de carpeta
