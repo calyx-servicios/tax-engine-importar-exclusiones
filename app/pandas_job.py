@@ -1,4 +1,5 @@
 """Pandas Job"""
+
 import asyncio
 import logging
 import os
@@ -24,7 +25,7 @@ class PandasJob:
         Returns:
             _type_: _description_
         """
-        full_path = (f"{output_path}/{file_path}")
+        full_path = f"{output_path}/{file_path}"
         df_data = pd.read_csv(
             full_path,
             encoding="ISO-8859-1",

@@ -1,4 +1,5 @@
 """Database tools"""
+
 # pylint: disable=broad-except
 
 import logging

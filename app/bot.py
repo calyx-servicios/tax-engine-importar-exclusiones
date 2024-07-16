@@ -1,4 +1,5 @@
 """Bot Tools"""
+
 import asyncio
 import logging
 import os
@@ -110,9 +111,7 @@ class Bot:
                 )
             )
 
-            self._box.upload_files(
-                self.output_folder, f"{self._output_path}/{f_upload['name']}"
-            )
+            self._box.upload_files(self.output_folder, f"{self._output_path}/{f_upload['name']}")
 
             items_to_delete = self._box.get_all_items_of_folder(folder_id_input, "file")
             self._box.delete_files(items_to_delete)
