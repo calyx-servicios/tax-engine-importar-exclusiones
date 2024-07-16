@@ -9,7 +9,7 @@ from typing import Tuple
 from database import Database
 from pandas import DataFrame
 from pandas_job import PandasJob
-from box import Box
+from submodules.box_sm.box import Box
 
 _logger = logging.getLogger(__name__)
 logging.getLogger("boxsdk").setLevel(logging.WARNING)
@@ -34,7 +34,10 @@ class Bot:
         _logger.info("====Starting Bot===")
         self._database = Database()
         self._pandas_job = PandasJob()
-        self._box = Box(_logger)
+        self._box = Box()
+        self.input_folder = os.getenv("INPUT_FOLDER_ID")
+        self.output_folder = os.getenv("OUTPUT_FOLDER_ID")
+        self._main_folder = os.getenv("MAIN_FOLDER_ID")
         self._loop = asyncio.get_event_loop()
         self._output_path = os.getenv("OUTPUT_PATH")
         self._table_name = os.getenv("TABLE_NAME")
@@ -83,16 +86,19 @@ class Bot:
 
     async def job(self):
         """Job"""
-        files = self._box.get_files(self._output_path)
+        main_folder_id = self._main_folder
+        folder_id_input = self._box.get_folder_id_from_all_files(
+            folder_name="Input",
+            folder_id=main_folder_id,
+        )[0]
+        files = self._box.download_files(self._output_path, self.input_folder)
 
         for f_upload in files:
-            _logger.info("Processing file %s", f_upload["path"])
+            _logger.info("Processing file %s", f_upload["name"])
 
-            data = self.format_file(self._pandas_job.read_file(f_upload["path"]))
+            data = self.format_file(self._pandas_job.read_file(f_upload["name"], self._output_path))
 
             altas, bajas = self.divide_alta_baja(data)
-
-            basename, ext = os.path.splitext(os.path.basename(f_upload["path"]))
 
             self._database.delete_from_df(self._table_name, bajas)
 
@@ -104,11 +110,12 @@ class Bot:
                 )
             )
 
-            self._box.upload_file(
-                f'{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}', f_upload["path"]
+            self._box.upload_files(
+                self.output_folder, f"{self._output_path}/{f_upload['name']}"
             )
 
-            self._box.delete_file(f_upload["path"])
+            items_to_delete = self._box.get_all_items_of_folder(folder_id_input, "file")
+            self._box.delete_files(items_to_delete)
 
             await asyncio.gather(*tasks, return_exceptions=False)
 

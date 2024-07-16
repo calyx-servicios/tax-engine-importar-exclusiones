@@ -1,6 +1,3 @@
-# Agustin Wisky <a.wisky@patagon.io> 
-
-version: '3'
 services:
   bot:
     build: .
@@ -18,12 +15,15 @@ services:
       - CREATE=true # This variable is only necessary for local development
       - OUTPUT_PATH=/code/app/downloads
       - AGENTE=1
-      - BOX_GRANT_TYPE=client_credentials
-      - BOX_CLIENT_ID=iwmojaoson1dls1u9771lul9rc9uzlc7
-      - BOX_CLIENT_SECRET=QuWrsUMhjrWUjwDtZ3ohjoXhMoGl8qfH
+      - GRANT_TYPE=client_credentials
+      - CLIENT_ID=iwmojaoson1dls1u9771lul9rc9uzlc7
+      - CLIENT_SECRET=QuWrsUMhjrWUjwDtZ3ohjoXhMoGl8qfH
       - BOX_SUBJECT_ID=26053675872
       - BOX_SUBJECT_TYPE=user
       - BOX_ENV=DEV
+      - INPUT_FOLDER_ID=https://app.box.com/s/m6tflakmt0ytdwxq299dq9596ijx8v6d
+      - OUTPUT_FOLDER_ID=275038662740
+      - MAIN_FOLDER_ID=275036558199
     ports:
       - "1022:22"
       - "3002:3002" # Debugpy if Debug=true | Matching the .vscode launch "debugServer": 3002 

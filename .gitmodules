@@ -1,0 +1,3 @@
+[submodule "app/submodules/box_sm"]
+	path = app/submodules/box_sm
+	url = https://github.com/calyx-servicios/datareader-submodule-box

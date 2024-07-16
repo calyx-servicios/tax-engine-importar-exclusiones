@@ -15,7 +15,7 @@ class PandasJob:
     df = False
     chunk_size = 50000
 
-    def read_file(self, file_path):
+    def read_file(self, file_path, output_path):
         """Read file and returns as dataframe
 
         Args:
@@ -24,8 +24,9 @@ class PandasJob:
         Returns:
             _type_: _description_
         """
+        full_path = (f"{output_path}/{file_path}")
         df_data = pd.read_csv(
-            file_path,
+            full_path,
             encoding="ISO-8859-1",
             skipinitialspace=True,
             delimiter=",",

@@ -28,6 +28,10 @@ jobs:
         format: 'YYYYMMDDHHmm'
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_ACCES_KEY }}
+        submodules: recursive  # Esta línea indica que se deben clonar los submódulos de forma recursiva
+        fetch-depth: 0  # Con fetch-depth: 0 se clonarán todos los commits de los submódulos
    
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
