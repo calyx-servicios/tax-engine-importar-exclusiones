@@ -112,11 +112,11 @@ class Bot:
                     self._pandas_job.insert_df_async(altas, self._table_name, self._database.engine)
                 )
             )
-            name_with_dates = f'{self._output_path}/{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}'
-            os.rename(f'{self._output_path}/{basename}{ext}', name_with_dates)
-            self._box.upload_files(self.output_folder,
-                name_with_dates
+            name_with_dates = (
+                f'{self._output_path}/{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}'
             )
+            os.rename(f"{self._output_path}/{basename}{ext}", name_with_dates)
+            self._box.upload_files(self.output_folder, name_with_dates)
             items_to_delete = self._box.get_all_items_of_folder(folder_id_input, "file")
             items_to_delete[0]["file_id"] = items_to_delete[0]["id"]
             self._box.delete_files(items_to_delete)
