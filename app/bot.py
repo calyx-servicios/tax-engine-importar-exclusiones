@@ -112,8 +112,8 @@ class Bot:
             )
 
             self._box.upload_files(self.output_folder, f"{self._output_path}/{f_upload['name']}")
-
             items_to_delete = self._box.get_all_items_of_folder(folder_id_input, "file")
+            items_to_delete[0]["file_id"] = items_to_delete[0]["id"]
             self._box.delete_files(items_to_delete)
 
             await asyncio.gather(*tasks, return_exceptions=False)
