@@ -101,6 +101,8 @@ class Bot:
 
             altas, bajas = self.divide_alta_baja(data)
 
+            basename, ext = os.path.splitext(os.path.basename(f_upload["name"]))
+
             self._database.delete_from_df(self._table_name, bajas)
 
             tasks = []
@@ -110,8 +112,11 @@ class Bot:
                     self._pandas_job.insert_df_async(altas, self._table_name, self._database.engine)
                 )
             )
-
-            self._box.upload_files(self.output_folder, f"{self._output_path}/{f_upload['name']}")
+            name_with_dates = f'{self._output_path}/{basename}_{datetime.now().strftime("%d_%m_%Y %H_%M")}{ext}'
+            os.rename(f'{self._output_path}/{basename}{ext}', name_with_dates)
+            self._box.upload_files(self.output_folder,
+                name_with_dates
+            )
             items_to_delete = self._box.get_all_items_of_folder(folder_id_input, "file")
             items_to_delete[0]["file_id"] = items_to_delete[0]["id"]
             self._box.delete_files(items_to_delete)
