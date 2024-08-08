@@ -98,8 +98,9 @@ class PandasJob:
                 for fecha_vigencia_hasta in df_data_cleaned["fecha_vigencia_hasta"]
             ]
 
-            df_data_cleaned["descripcion"] = df_data_cleaned[
-                "descripcion"].astype(str).str.slice(0, 100)
+            df_data_cleaned["descripcion"] = (
+                df_data_cleaned["descripcion"].astype(str).str.slice(0, 100)
+            )
 
             df_data_agents = pd.read_sql_table("agentes", engine)
             df_data_regimes = pd.read_sql_table("regimenes", engine)
@@ -117,9 +118,21 @@ class PandasJob:
             df_data_cleaned["descripcion"] = df_data_cleaned["descripcion_x"]
             df_data_cleaned["regimen_id"] = list(df_data_cleaned["id"])
 
-            df_data_cleaned.drop(["descripcion_x", "descripcion_y", "regimen", "id", "codigo", "minimo_imponible", 
-                "alicuota_default", "alicuota_locales", "alicuota_convenio"], 
-                axis=1, inplace=True)
+            df_data_cleaned.drop(
+                [
+                    "descripcion_x",
+                    "descripcion_y",
+                    "regimen",
+                    "id",
+                    "codigo",
+                    "minimo_imponible",
+                    "alicuota_default",
+                    "alicuota_locales",
+                    "alicuota_convenio",
+                ],
+                axis=1,
+                inplace=True,
+            )
 
             df_data_cleaned.to_sql(table, engine, if_exists="append", index=False, method="multi")
 
