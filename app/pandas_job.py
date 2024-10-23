@@ -26,26 +26,35 @@ class PandasJob:
             _type_: _description_
         """
         full_path = f"{output_path}/{file_path}"
-        df_data = pd.read_csv(
-            full_path,
-            encoding="ISO-8859-1",
-            skipinitialspace=True,
-            delimiter=",",
-            index_col=False,
-            header=None,
-            parse_dates=[
-                "fecha_vigencia_desde",
-                "fecha_vigencia_hasta",
-            ],
-            names=[
-                "cuit",
-                "regimen",
-                "fecha_vigencia_desde",
-                "fecha_vigencia_hasta",
-                "alta_baja",
-                "descripcion",
-            ],
-        )
+        try:
+            df_data = pd.read_csv(
+                full_path,
+                encoding="ISO-8859-1",
+                skipinitialspace=True,
+                delimiter=",",
+                decimal=".",
+                index_col=False,
+                header=None,
+                dtype={"alicuota": float},
+                parse_dates=[
+                    "fecha_vigencia_desde",
+                    "fecha_vigencia_hasta",
+                ],
+                names=[
+                    "cuit",
+                    "regimen",
+                    "fecha_vigencia_desde",
+                    "fecha_vigencia_hasta",
+                    "alta_baja",
+                    "descripcion",
+                    "alicuota",
+                ],
+            )
+        except ValueError as ex:
+            _logger.error(
+                "El csv subido contiene un formato incorrecto en alguna columna. Revisar y volver a ejectuar."
+            )
+            raise ex
 
         df_data = df_data.drop_duplicates()
 
@@ -129,6 +138,9 @@ class PandasJob:
                     "alicuota_default",
                     "alicuota_locales",
                     "alicuota_convenio",
+                    "requiere_situacion_iva",
+                    "nombre_impuesto_odoo",
+                    "jurisdiccion_sircar",
                 ],
                 axis=1,
                 inplace=True,
