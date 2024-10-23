@@ -52,7 +52,10 @@ class PandasJob:
             )
         except ValueError as ex:
             _logger.error(
-                "El csv subido contiene un formato incorrecto en alguna columna. Revisar y volver a ejectuar."
+                (
+                    "El csv subido contiene un formato incorrecto en alguna"
+                    "columna. Revisar y volver a ejectuar."
+                )
             )
             raise ex
 
