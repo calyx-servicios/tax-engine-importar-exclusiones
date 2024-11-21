@@ -238,10 +238,13 @@ class Box:
             "box_subject_type": box_subject_type,
             "box_subject_id": box_subject_id,
         }
+        print(payload)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         auth_responce = requests.post(post_auth_url, data=payload, headers=headers, timeout=2000)
+        print(auth_responce)
         if auth_responce.status_code == 200:
             auth_responce = auth_responce.json()
+            print(auth_responce)
             if "access_token" in auth_responce:
                 token = auth_responce["access_token"]
                 expires_in = auth_responce["expires_in"]
