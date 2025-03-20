@@ -29,7 +29,7 @@ class PandasJob:
         try:
             df_data = pd.read_csv(
                 full_path,
-                encoding="ISO-8859-1",
+                encoding="utf-8-sig",
                 skipinitialspace=True,
                 delimiter=",",
                 decimal=".",
@@ -98,6 +98,9 @@ class PandasJob:
                     raise ex
 
             df_data_cleaned["cuit"] = [str(cuit).strip() for cuit in df_data_cleaned["cuit"]]
+            df_data_cleaned["alicuota"] = [
+                float(alicuota) for alicuota in df_data_cleaned["alicuota"]
+            ]
             df_data_cleaned["regimen"] = [
                 str(regimen).strip() for regimen in df_data_cleaned["regimen"]
             ]
@@ -127,7 +130,7 @@ class PandasJob:
             df_data_cleaned = df_data_cleaned.merge(
                 df_data_regimes, left_on="regimen", right_on="codigo"
             )
-            df_data_cleaned["descripcion"] = df_data_cleaned["descripcion_x"]
+            df_data_cleaned["descripcion"] = df_data_cleaned["descripcion_x"].replace({"nan": ""})
             df_data_cleaned["regimen_id"] = list(df_data_cleaned["id"])
 
             df_data_cleaned.drop(
@@ -144,6 +147,8 @@ class PandasJob:
                     "requiere_situacion_iva",
                     "nombre_impuesto_odoo",
                     "jurisdiccion_sircar",
+                    "alicuota_2",
+                    "alicuota_3",
                 ],
                 axis=1,
                 inplace=True,
