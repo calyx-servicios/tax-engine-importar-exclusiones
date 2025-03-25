@@ -4,8 +4,8 @@ import asyncio
 import logging
 import os
 from datetime import datetime
-import pandas as pd
 from typing import Iterable
+import pandas as pd
 from sqlalchemy.engine import Engine
 
 _logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ def date_parser_func(dates: Iterable):
             "Error en el formato de subida del campo fecha_vigencia_desde o fecha_vigencia_hasta"
         )
         raise ex
+
 
 class PandasJob:
     """Pandas Job"""
