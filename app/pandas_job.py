@@ -1,13 +1,26 @@
 """Pandas Job"""
+
 import asyncio
 import logging
 import os
-
+from datetime import datetime
 import pandas as pd
+from typing import Iterable
 from sqlalchemy.engine import Engine
 
 _logger = logging.getLogger(__name__)
 
+
+def date_parser_func(dates: Iterable):
+    """Se encarga de formatear las fechas enviadas en el archivo CSV"""
+    try:
+        formated_dates = [datetime.strptime(date, "%d/%m/%Y %H:%M:%S") for date in dates]
+        return formated_dates
+    except ValueError as ex:
+        _logger.error(
+            "Error en el formato de subida del campo fecha_vigencia_desde o fecha_vigencia_hasta"
+        )
+        raise ex
 
 class PandasJob:
     """Pandas Job"""
@@ -35,6 +48,8 @@ class PandasJob:
                 "fecha_vigencia_desde",
                 "fecha_vigencia_hasta",
             ],
+            infer_datetime_format=False,
+            date_parser=date_parser_func,
             names=[
                 "cuit",
                 "regimen",
