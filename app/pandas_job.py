@@ -3,9 +3,10 @@
 import asyncio
 import logging
 import os
+import pandas as pd
+
 from datetime import datetime
 from typing import Iterable
-import pandas as pd
 from sqlalchemy.engine import Engine
 
 _logger = logging.getLogger(__name__)
