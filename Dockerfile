@@ -36,4 +36,8 @@ EXPOSE 3003
 COPY bootstrap.sh /etc/bootstrap.sh
 RUN chmod a+x /etc/bootstrap.sh
 
+ARG GITHUB_TOKEN
+
+RUN git clone --recurse-submodules https://${GITHUB_TOKEN}@github.com/calyx-servicios/datareader-submodule-box.git /code/app/submodules/box_sm
+
 CMD ["/etc/bootstrap.sh"]
