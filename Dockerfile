@@ -1,6 +1,6 @@
 #
-FROM joyzoursky/python-chromedriver:3.9
-LABEL maintainer="Agustin Wisky. <a.wisky@patagon.io>"
+FROM rapidfort/python-chromedriver@sha256:83e404c0a70873abcb399b1065f7e29162afcf89c9e0e16e229745f41c67eccd
+LABEL maintainer="Calyx Servicios S.A"
 
 WORKDIR /code
  
