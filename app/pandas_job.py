@@ -149,22 +149,17 @@ class PandasJob:
             df_data_cleaned["descripcion"] = df_data_cleaned["descripcion_x"].replace({"nan": ""})
             df_data_cleaned["regimen_id"] = list(df_data_cleaned["id"])
 
-            df_data_cleaned.drop(
+            df_data_cleaned = df_data_cleaned[
                 [
-                    "descripcion_x",
-                    "descripcion_y",
-                    "regimen",
-                    "id",
-                    "codigo",
-                    "minimo_imponible",
-                    "requiere_situacion_iva",
-                    "nombre_impuesto_odoo",
-                    "jurisdiccion_sircar",
-                    "habitualista_cantidad_operaciones"
-                ],
-                axis=1,
-                inplace=True,
-            )
+                    "cuit",
+                    "fecha_vigencia_desde",
+                    "fecha_vigencia_hasta",
+                    "regimen_id",
+                    "agente_id",
+                    "descripcion",
+                    "alicuota",
+                ]
+            ]
 
             df_data_cleaned.to_sql(table, engine, if_exists="append", index=False, method="multi")
 
