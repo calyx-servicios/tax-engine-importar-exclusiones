@@ -30,6 +30,55 @@ class PandasJob:
     df = False
     chunk_size = 50000
 
+    def _detect_encoding_and_delimiter(self, file_path: str) -> tuple:
+        """Detecta automáticamente la codificación y delimitador del archivo
+
+        Args:
+            file_path (str): Ruta completa del archivo
+
+        Returns:
+            tuple: (encoding, delimiter)
+        """
+        try:
+            # Primero intentamos leer con utf-8-sig (elimina BOM si existe)
+            with open(file_path, "r", encoding="utf-8-sig") as f:
+                first_line = f.readline().strip()
+
+            encoding = "utf-8-sig"
+            _logger.info("Detected encoding: UTF-8 with BOM")
+        except UnicodeDecodeError:
+            # Si falla, usamos ISO-8859-1
+            try:
+                with open(file_path, "r", encoding="ISO-8859-1") as f:
+                    first_line = f.readline().strip()
+                encoding = "ISO-8859-1"
+                _logger.info("Detected encoding: ISO-8859-1")
+            except Exception as ex:
+                _logger.warning(f"Error detecting encoding: {ex}, defaulting to utf-8-sig")
+                encoding = "utf-8-sig"
+                first_line = ""
+
+        try:
+            comma_count = first_line.count(",")
+            semicolon_count = first_line.count(";")
+
+            _logger.info(
+                f"Detected delimiters - Commas: {comma_count}, Semicolons: {semicolon_count}"
+            )
+
+            # Retorna el delimitador que más apariciones tiene
+            if semicolon_count > comma_count:
+                _logger.info("Using semicolon (;) as delimiter")
+                delimiter = ";"
+            else:
+                _logger.info("Using comma (,) as delimiter")
+                delimiter = ","
+
+            return encoding, delimiter
+        except Exception as ex:
+            _logger.warning(f"Error detecting delimiter: {ex}, defaulting to comma")
+            return encoding, ","
+
     def read_file(self, file_path, output_path):
         """Read file and returns as dataframe
 
@@ -41,11 +90,14 @@ class PandasJob:
         """
         full_path = f"{output_path}/{file_path}"
         try:
+            # Detecta encoding y delimitador automáticamente
+            encoding, delimiter = self._detect_encoding_and_delimiter(full_path)
+
             df_data = pd.read_csv(
                 full_path,
-                encoding="utf-8-sig",
+                encoding=encoding,
                 skipinitialspace=True,
-                delimiter=",",
+                delimiter=delimiter,
                 decimal=".",
                 index_col=False,
                 header=None,
