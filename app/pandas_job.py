@@ -183,9 +183,9 @@ class PandasJob:
                     raise ex
 
             df_data_cleaned["cuit"] = [str(cuit).strip() for cuit in df_data_cleaned["cuit"]]
-            df_data_cleaned["alicuota"] = [
-                float(alicuota) for alicuota in df_data_cleaned["alicuota"]
-            ]
+            df_data_cleaned["alicuota"] = pd.to_numeric(
+                df_data_cleaned["alicuota"], errors="coerce"
+            )
             df_data_cleaned["regimen"] = [
                 str(regimen).strip() for regimen in df_data_cleaned["regimen"]
             ]
