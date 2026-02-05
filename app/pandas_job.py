@@ -31,13 +31,13 @@ class PandasJob:
     chunk_size = 50000
 
     def _detect_encoding_and_delimiter(self, file_path: str) -> tuple:
-        """Detecta automáticamente la codificación y delimitador del archivo
+        """Detecta automáticamente la codificación, delimitador y columnas del archivo
 
         Args:
             file_path (str): Ruta completa del archivo
 
         Returns:
-            tuple: (encoding, delimiter)
+            tuple: (encoding, delimiter, column_count)
         """
         try:
             # Primero intentamos leer con utf-8-sig (elimina BOM si existe)
@@ -74,10 +74,11 @@ class PandasJob:
                 _logger.info("Using comma (,) as delimiter")
                 delimiter = ","
 
-            return encoding, delimiter
+            column_count = (first_line.count(delimiter) + 1) if first_line else 0
+            return encoding, delimiter, column_count
         except Exception as ex:
             _logger.warning(f"Error detecting delimiter: {ex}, defaulting to comma")
-            return encoding, ","
+            return encoding, ",", 0
 
     def read_file(self, file_path, output_path):
         """Read file and returns as dataframe
@@ -90,8 +91,27 @@ class PandasJob:
         """
         full_path = f"{output_path}/{file_path}"
         try:
-            # Detecta encoding y delimitador automáticamente
-            encoding, delimiter = self._detect_encoding_and_delimiter(full_path)
+            # Detecta encoding, delimitador y cantidad de columnas automáticamente
+            encoding, delimiter, column_count = self._detect_encoding_and_delimiter(full_path)
+
+            all_names = [
+                "cuit",
+                "regimen",
+                "fecha_vigencia_desde",
+                "fecha_vigencia_hasta",
+                "alta_baja",
+                "descripcion",
+                "alicuota",
+            ]
+
+            if column_count and column_count > len(all_names):
+                raise ValueError("El csv tiene más columnas de las esperadas.")
+
+            if column_count <= 0:
+                column_count = len(all_names)
+
+            names = all_names[:column_count]
+            dtype = {"alicuota": float} if "alicuota" in names else None
 
             df_data = pd.read_csv(
                 full_path,
@@ -101,22 +121,14 @@ class PandasJob:
                 decimal=".",
                 index_col=False,
                 header=None,
-                dtype={"alicuota": float},
+                dtype=dtype,
                 parse_dates=[
                     "fecha_vigencia_desde",
                     "fecha_vigencia_hasta",
                 ],
                 infer_datetime_format=False,
                 date_parser=date_parser_func,
-                names=[
-                    "cuit",
-                    "regimen",
-                    "fecha_vigencia_desde",
-                    "fecha_vigencia_hasta",
-                    "alta_baja",
-                    "descripcion",
-                    "alicuota",
-                ],
+                names=names,
             )
         except ValueError as ex:
             _logger.error(
@@ -126,6 +138,11 @@ class PandasJob:
                 )
             )
             raise ex
+
+        if "descripcion" not in df_data.columns:
+            df_data["descripcion"] = ""
+        if "alicuota" not in df_data.columns:
+            df_data["alicuota"] = pd.NA
 
         df_data = df_data.drop_duplicates()
 
